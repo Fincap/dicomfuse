@@ -2,7 +2,7 @@ from typing import List, Tuple
 
 import numpy as np
 
-def __validate_points(from_points: List[Tuple[float, float]], to_points: List[Tuple[float, float]]):
+def __validate_points(from_points: List[Tuple[float, ...]], to_points: List[Tuple[float, ...]]):
   """
   Validates that the two list of points given are of equal length and dimensionality (i.e. they correspond).
   """
@@ -26,7 +26,7 @@ def __validate_points(from_points: List[Tuple[float, float]], to_points: List[Tu
       raise Exception("Inconsistent dimensionality in to points.")
 
 
-def get_transform_function(from_points: List[Tuple[float, float]], to_points: List[Tuple[float, float]]):
+def get_transform_function(from_points: List[Tuple[float, ...]], to_points: List[Tuple[float, ...]]):
   """
   Calculate the affine transformation matrix from moving to fixed and return a function that applies this
   transformation to a given set of points.
