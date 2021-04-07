@@ -9,3 +9,6 @@
 
 # Python egg metadata.
 /*.egg-info
+
+# Visual Studio Code settings.
+/.vscode/
