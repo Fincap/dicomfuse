@@ -1,0 +1,11 @@
+# Compiled python modules.
+*.pyc
+
+# Setuptools dist folder.
+/dist/
+
+# Development virtual environment.
+/venv/
+
+# Python egg metadata.
+/*.egg-info
