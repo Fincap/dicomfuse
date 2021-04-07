@@ -2,7 +2,7 @@ from typing import List, Tuple
 
 import numpy as np
 
-def _validate_points(primary_points: List[Tuple[float, float]], secondary_points: List[Tuple[float, float]]):
+def __validate_points(primary_points: List[Tuple[float, float]], secondary_points: List[Tuple[float, float]]):
   """
   Validates that the two list of points given are of equal length and dimensionality (i.e. they correspond).
   """
@@ -34,7 +34,7 @@ def get_transform_function(primary_points: List[Tuple[float, float]], secondary_
   """
 
   try:
-    _validate_points(primary_points, secondary_points)
+    __validate_points(primary_points, secondary_points)
   except Exception as e:
     raise e
 
