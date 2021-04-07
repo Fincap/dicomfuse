@@ -4,7 +4,7 @@ setup(
   name='dicomfuse',
   version='0.0.1',
   description='Simple library for finding affine translation matrix between two DICOM images.',
-  url='n/a',
+  url='https://github.com/Fincap/dicomfuse',
   author='Matthew Archer',
   author_email='matthew.e.archer9@gmail.com',
   packages=find_packages(where='dicomfuse'),
