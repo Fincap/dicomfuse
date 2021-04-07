@@ -2,50 +2,50 @@ from typing import List, Tuple
 
 import numpy as np
 
-def __validate_points(primary_points: List[Tuple[float, float]], secondary_points: List[Tuple[float, float]]):
+def __validate_points(from_points: List[Tuple[float, float]], to_points: List[Tuple[float, float]]):
   """
   Validates that the two list of points given are of equal length and dimensionality (i.e. they correspond).
   """
   # Check neither list is empty:
-  if len(primary_points) == 0 or len(secondary_points) == 0:
+  if len(from_points) == 0 or len(to_points) == 0:
     raise Exception("Points cannot be empty.")
 
   # Check the lists are both the same length
-  if len(primary_points) != len(secondary_points):
-    raise Exception("Primary and secondary points are not the same length.")
+  if len(from_points) != len(to_points):
+    raise Exception("From and to points are not the same length.")
   
   # Check if the dimensionality is consistent throughout both lists
-  primary_dimensionality = len(primary_points[0])
-  for p in primary_points:
+  primary_dimensionality = len(from_points[0])
+  for p in from_points:
     if len(p) != primary_dimensionality:
-      raise Exception("Inconsistent dimensionality in primary points.")
+      raise Exception("Inconsistent dimensionality in from points.")
 
-  secondary_dimensionality = len(secondary_points[0])
-  for s in secondary_points:
+  secondary_dimensionality = len(to_points[0])
+  for s in to_points:
     if len(s) != secondary_dimensionality:
-      raise Exception("Inconsistent dimensionality in secondary points.")
+      raise Exception("Inconsistent dimensionality in to points.")
 
 
-def get_transform_function(primary_points: List[Tuple[float, float]], secondary_points: List[Tuple[float, float]]):
+def get_transform_function(from_points: List[Tuple[float, float]], to_points: List[Tuple[float, float]]):
   """
-  Calculate the affine transformation matrix from primary to secondary and return a function that applies this
-  transformation to the given set of points.
+  Calculate the affine transformation matrix from moving to fixed and return a function that applies this
+  transformation to a given set of points.
   Credit to Stack Overflow user 'mathematical.coffee': https://stackoverflow.com/a/8874969 for basis of function.
   """
 
   try:
-    __validate_points(primary_points, secondary_points)
+    __validate_points(from_points, to_points)
   except Exception as e:
     raise e
 
-  dimensionality = len(primary_points[0])
+  dimensionality = len(from_points[0])
 
-  x = np.transpose(np.matrix(primary_points))
-  y = np.transpose(np.matrix(secondary_points))
+  x = np.transpose(np.matrix(from_points))
+  y = np.transpose(np.matrix(to_points))
 
   # Add ones on the bottom of x and y
-  x_one_row = [1 for i in range(len(primary_points))]
-  y_one_row = [1 for i in range(len(secondary_points))]
+  x_one_row = [1 for i in range(len(from_points))]
+  y_one_row = [1 for i in range(len(to_points))]
 
   x = np.vstack((x, x_one_row))
   y = np.vstack((y, y_one_row))
