@@ -1,1 +1,0 @@
-from .solve_affine import get_transform_function
