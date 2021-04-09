@@ -39,8 +39,6 @@ def get_transform_matrix(fixed_points: List[Tuple[float, ...]], moving_points: L
   except Exception as e:
     raise e
 
-  dimensionality = len(moving_points[0])
-
   fixed_matrix = np.transpose(np.matrix(fixed_points))
   moving_matrix = np.transpose(np.matrix(moving_points))
 
@@ -64,5 +62,20 @@ def get_transform_matrix(fixed_points: List[Tuple[float, ...]], moving_points: L
 
 
 def apply_transform_to_points(transformation_matrix: np.matrix, moving_points: List[Tuple[float, ...]]):
-  #TODO
-  return
+  """Apply the transformation matrix to a set of moving points and return the the transformed moving points.
+
+  Args:
+      transformation_matrix (np.matrix): Affine transformation matrix.
+      moving_points (List[Tuple[float, ...]]): The set of points to be transformed.
+  """
+
+  dimensionality = len(moving_points[0])
+
+  moving_matrix = np.transpose(np.matrix(moving_points))
+  augment_row = [1 for i in range(len(moving_points))]
+  moving_matrix = np.vstack((moving_matrix, augment_row))
+
+  transformed_matrix = (transformation_matrix * moving_matrix)[0:dimensionality,:].T
+  transformed_points = [tuple(row.tolist()[0]) for row in transformed_matrix]
+
+  return transformed_points
