@@ -1,15 +1,15 @@
 import numpy as np
 
-from dicomfuse import apply_transform_to_points
+import dicomfuse
 
-primary_points = [
+fixed_points = [
   (1, 1),
   (2, 2),
   (3, 3),
   (4, 4)
 ]
 
-secondary_points = [
+moving_points = [
   (1, 2),
   (2, 3),
   (3, 4),
@@ -17,5 +17,6 @@ secondary_points = [
 ]
 
 
-result = apply_transform_to_points(primary_points, secondary_points)
+t = dicomfuse.get_transform_matrix(fixed_points, moving_points)
+result = dicomfuse.apply_transform_to_points(t, moving_points)
 print(result)
