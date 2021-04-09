@@ -3,81 +3,66 @@ from typing import List, Tuple
 import numpy as np
 
 
-def __validate_points(from_points: List[Tuple[float, ...]], to_points: List[Tuple[float, ...]]):
+def __validate_points(fixed_points: List[Tuple[float, ...]], moving_points: List[Tuple[float, ...]]):
   """
   Validates that the two list of points given are of equal length and dimensionality (i.e. they correspond).
   """
   # Check neither list is empty:
-  if len(from_points) == 0 or len(to_points) == 0:
+  if len(moving_points) == 0 or len(fixed_points) == 0:
     raise Exception("Points cannot be empty.")
 
   # Check the lists are both the same length
-  if len(from_points) != len(to_points):
+  if len(moving_points) != len(fixed_points):
     raise Exception("From and to points are not the same length.")
   
   # Check if the dimensionality is consistent throughout both lists
-  primary_dimensionality = len(from_points[0])
-  for p in from_points:
+  primary_dimensionality = len(moving_points[0])
+  for p in moving_points:
     if len(p) != primary_dimensionality:
-      raise Exception("Inconsistent dimensionality in from points.")
+      raise Exception("Inconsistent dimensionality in moving points.")
 
-  secondary_dimensionality = len(to_points[0])
-  for s in to_points:
+  secondary_dimensionality = len(fixed_points[0])
+  for s in fixed_points:
     if len(s) != secondary_dimensionality:
-      raise Exception("Inconsistent dimensionality in to points.")
+      raise Exception("Inconsistent dimensionality in fixed points.")
 
 
-def get_transform_function(from_points: List[Tuple[float, ...]], to_points: List[Tuple[float, ...]]):
+def get_transform_matrix(fixed_points: List[Tuple[float, ...]], moving_points: List[Tuple[float, ...]]):
   """
-  Calculate the affine transformation matrix from moving to fixed and return a function that applies this
-  transformation to a given set of points.
+  Calculate the affine transformation matrix from moving to fixed, given that moving_points is a known transformation
+  of fixed_points. 
   Credit to Stack Overflow user 'mathematical.coffee': https://stackoverflow.com/a/8874969 for basis of function.
   """
 
   try:
-    __validate_points(from_points, to_points)
+    __validate_points(fixed_points, moving_points)
   except Exception as e:
     raise e
 
-  dimensionality = len(from_points[0])
+  dimensionality = len(moving_points[0])
 
-  x = np.transpose(np.matrix(from_points))
-  y = np.transpose(np.matrix(to_points))
+  fixed_matrix = np.transpose(np.matrix(fixed_points))
+  moving_matrix = np.transpose(np.matrix(moving_points))
 
-  # Add ones on the bottom of x and y
-  x_one_row = [1 for i in range(len(from_points))]
-  y_one_row = [1 for i in range(len(to_points))]
-
-  x = np.vstack((x, x_one_row))
-  y = np.vstack((y, y_one_row))
+  # Augment '1' at the end of all vectors
+  augment_row = [1 for i in range(len(moving_points))]
+  fixed_matrix = np.vstack((fixed_matrix, augment_row))
+  moving_matrix = np.vstack((moving_matrix, augment_row))
 
   # Solve for augmented matrix
-  A2 = y * x.I
+  transformation_matrix = fixed_matrix * moving_matrix.I
+
+  return transformation_matrix
 
   # TODO split this up into two functions: get transformation matrix (A2) and apply matrix to vector.
   # Also should probably rename 'x' and 'y' to something more descriptive such as original_points and
   # known_transformed_points.
 
   # Return function that takes input x and transforms it, removing addittional row
-  return lambda x: (A2 * np.vstack((np.matrix(x).reshape(dimensionality, 1), 1)))[0:dimensionality,:]
+  # return lambda x: (A2 * np.vstack((np.matrix(from_matrix).reshape(dimensionality, 1), 1)))[0:dimensionality,:]
 
 
-def apply_transform_to_points(from_points: List[Tuple[float, ...]], to_points: List[Tuple[float, ...]]):
-  """[summary]
 
-  Args:
-      from_points (List[Tuple[float, ...]]): [description]
-      to_points (List[Tuple[float, ...]]): [description]
-
-  Returns:
-      [type]: [description]
-  """
-  transform = get_transform_function(from_points, to_points)
-  transformed_points: List[Tuple[float, ...]] = []
-  
-  for point in from_points:
-    transformed_vector = transform(point).A1
-    transformed_vector_as_tuple = (transformed_vector[0], transformed_vector[1])
-    transformed_points.append(transformed_vector_as_tuple)
-
-  return transformed_points
+def apply_transform_to_points(transformation_matrix: np.matrix, moving_points: List[Tuple[float, ...]]):
+  #TODO
+  return
